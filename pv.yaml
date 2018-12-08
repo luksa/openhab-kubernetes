@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: openhab
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 1Gi
+  nfs:
+    path: /volume1/kubernetes-persistent-volumes/pv-openhab
+    server: 192.168.1.10
+  persistentVolumeReclaimPolicy: Retain

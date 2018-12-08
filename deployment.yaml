@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openhab
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openhab
+  template:
+    metadata:
+      labels:
+        app: openhab
+    spec:
+      containers:
+      - name: openhab
+        image: openhab/openhab:2.3.0-amd64-debian
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        - containerPort: 8443
+          name: https
+          protocol: TCP
+        - containerPort: 8101
+          name: console
+          protocol: TCP
+        volumeMounts:
+        - name: etc-localtime
+          mountPath: /etc/localtime
+          readOnly: true
+        - name: openhab
+          mountPath: /openhab/addons
+          subPath: addons
+          readOnly: false
+        - name: openhab
+          mountPath: /openhab/conf
+          subPath: conf
+          readOnly: false
+        - name: openhab
+          mountPath: /openhab/userdata
+          subPath: userdata
+          readOnly: false
+      volumes:
+      - name: etc-localtime
+        hostPath:
+          path: /usr/share/zoneinfo/Europe/Ljubljana
+      - name: openhab
+        persistentVolumeClaim:
+          claimName: openhab
+      terminationGracePeriodSeconds: 300
+
+
